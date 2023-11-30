@@ -13,7 +13,7 @@ dotenv.config();
 createUsersTable();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // Middleware
 app.use(bodyParser.json());
@@ -36,6 +36,12 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Only start the server if this file is the main module
+if (!module.parent) {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+// Explicitly export the app
+module.exports = app;

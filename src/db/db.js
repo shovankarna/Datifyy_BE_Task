@@ -1,7 +1,7 @@
 // src/db/index.js
 const { Pool } = require('pg');
 const dotenv = require('dotenv'); // Add dotenv for environment variables
-const { v4: uuidv4 } = require('uuid'); // Import UUID library
+// const { v4: uuidv4 } = require('uuid'); // Import UUID library
 
 dotenv.config(); // Load environment variables
 
