@@ -9,6 +9,22 @@ const JWT_SECRET = process.env.SECRET_KEY;
 const registerUser = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: 'Invalid email format' });
+  }
+
+  // Validate username length
+  if (username.length < 3) {
+    return res.status(400).json({ message: 'Username must be at least 3 characters long' });
+  }
+
+  // Validate password length
+  if (password.length < 3) {
+    return res.status(400).json({ message: 'Password must be at least 3 characters long' });
+  }
+
   // Verify that passwords match
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match' });
@@ -32,7 +48,8 @@ const registerUser = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ user: newUser, token });
+    // Send a response with only the necessary information
+    res.status(201).json({ username: newUser.username, email: newUser.email, token });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -42,6 +59,17 @@ const registerUser = async (req, res) => {
 // Function to handle user login
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: 'Invalid email format' });
+  }
+
+  // Validate password length
+  if (password.length < 3) {
+    return res.status(400).json({ message: 'Password must be at least 3 characters long' });
+  }
 
   try {
     // Check if the user exists based on the email
@@ -61,7 +89,8 @@ const loginUser = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ user, token });
+    // Send a response with only the necessary information
+    res.json({ username: user.username, email: user.email, token });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
