@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const { createUsersTable } = require('./db/db.js'); // Import the createUsersTable function
+const rateLimitMiddleware = require('./middleware/rateLimiterMiddleware.js');
 
 dotenv.config();
 
@@ -13,17 +14,11 @@ dotenv.config();
 createUsersTable();
 
 const app = express();
-const port = process.env.PORT || 3001;
+// app.use(rateLimitMiddleware);
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(bodyParser.json());
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 100,
-});
-app.use('/secure-endpoint', limiter);
 
 // Routes
 app.use('/auth', authRoutes);
