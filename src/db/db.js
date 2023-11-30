@@ -1,6 +1,7 @@
 // src/db/index.js
 const { Pool } = require('pg');
 const dotenv = require('dotenv'); // Add dotenv for environment variables
+const { v4: uuidv4 } = require('uuid'); // Import UUID library
 
 dotenv.config(); // Load environment variables
 
@@ -15,7 +16,7 @@ const pool = new Pool({
 const createUsersTable = async () => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       username VARCHAR(50) UNIQUE NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL
